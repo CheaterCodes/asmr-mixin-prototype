@@ -1,6 +1,6 @@
 package org.quiltmc.asmr.mixin;
 
-@Mixin(target = "org/quiltmc/asmr/mixin/BasicClass")
+@Mixin(BasicClass.class)
 public abstract class BasicMixin implements Runnable {
     @Override
     public void run() {

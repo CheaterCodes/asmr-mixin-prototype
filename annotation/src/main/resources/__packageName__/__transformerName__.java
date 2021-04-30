@@ -9,6 +9,7 @@ import org.quiltmc.asmr.processor.tree.AsmrValueNode;
 import org.quiltmc.asmr.processor.tree.member.AsmrMethodListNode;
 import org.quiltmc.asmr.processor.tree.member.AsmrMethodNode;
 
+@SuppressWarnings("unused")
 public class __transformerName__ implements AsmrTransformer {
     public void apply(AsmrProcessor processor) {
     }

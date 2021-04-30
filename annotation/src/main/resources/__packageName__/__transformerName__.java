@@ -35,12 +35,11 @@ public class __transformerName__ implements AsmrTransformer {
             AsmrSliceCapture<AsmrMethodNode> targeCapture = processor.refCapture(targetClass.methods(), 0, 0, true, false);
             processor.withClass(source, sourceClass -> {
                 sourceClass.methods().forEach(sourceMethod -> {
-                    if (sourceMethod.signature().value().equals(method)) {
-                        AsmrNodeCapture<AsmrMethodNode> sourceCapture = processor.refCapture(sourceMethod);
+                    if ((sourceMethod.name().value() + sourceMethod.desc().value()).equals(method)) {
+                        AsmrNodeCapture<AsmrMethodNode> sourceCapture = processor.copyCapture(sourceMethod);
                         processor.addWrite(this, targeCapture, () -> {
                             AsmrMethodListNode methods = new AsmrMethodListNode();
-                            AsmrMethodNode methodNode = methods.add();
-                            processor.substitute(methodNode, sourceCapture);
+                            processor.substitute(methods.add(), sourceCapture);
                             return methods;
                         });
                     }

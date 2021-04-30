@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.QuiltMC:asmr-processor-prototype:24567ee45b'
+    implementation 'com.github.QuiltMC:asmr-processor-prototype:fbaea89'
 
     compileOnly project(':annotation')
     annotationProcessor project(':annotation')

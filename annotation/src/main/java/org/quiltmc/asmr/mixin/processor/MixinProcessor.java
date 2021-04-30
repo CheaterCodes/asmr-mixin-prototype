@@ -85,7 +85,7 @@ public class MixinProcessor extends AbstractProcessor {
             String transformer = template.getCharContent(false).toString().replace("__packageName__", packageName)
                     .replace("__transformerName__", transformerName).replace("__body__", body);
 
-            JavaFileObject file = processingEnv.getFiler().createSourceFile(transformerName, mixin);
+            JavaFileObject file = processingEnv.getFiler().createSourceFile(packageName + '.' + transformerName, mixin);
             try (Writer writer = file.openWriter()) {
                 writer.write(transformer);
             }

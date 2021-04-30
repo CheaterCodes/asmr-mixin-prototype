@@ -9,6 +9,8 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
+sourceSets.main.java.srcDirs += 'build/generated/sources/annotationProcessor/java/main'
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -23,4 +25,16 @@ repositories {
 
 dependencies {
     implementation 'com.github.QuiltMC:asmr-processor-prototype:24567ee45b'
+
+    compileOnly project(':annotation')
+    annotationProcessor project(':annotation')
+
+    testImplementation project(':example')
+    testImplementation 'org.ow2.asm:asm:9.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
 }

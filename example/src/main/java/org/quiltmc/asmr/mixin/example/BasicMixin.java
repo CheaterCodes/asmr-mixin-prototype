@@ -1,6 +1,8 @@
-package org.quiltmc.asmr.mixin;
+package org.quiltmc.asmr.mixin.example;
 
-@Mixin(target = "org/quiltmc/asmr/mixin/BasicClass")
+import org.quiltmc.asmr.mixin.Mixin;
+
+@Mixin(target = "org/quiltmc/asmr/mixin/example/BasicClass")
 public abstract class BasicMixin implements Runnable {
     private int field;
 

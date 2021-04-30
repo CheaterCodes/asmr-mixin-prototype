@@ -14,14 +14,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories { 
     mavenCentral()
-    maven {
-        name = "Quilt"
-        url = "https://maven.quiltmc.org/repository/release"
-    }
-    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    implementation 'com.github.QuiltMC:asmr-processor-prototype:24567ee'
-    implementation project(':compiler-lib')
 }

@@ -15,7 +15,6 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.AnnotationValueVisitor;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -26,6 +25,8 @@ import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 
+import org.quiltmc.asmr.compiler.ElementUtils;
+import org.quiltmc.asmr.compiler.TypeUtils;
 import org.quiltmc.asmr.mixin.Mixin;
 
 @SupportedAnnotationTypes("org.quiltmc.asmr.mixin.Mixin")
@@ -43,9 +44,9 @@ public class MixinProcessor extends AbstractProcessor {
             for (AnnotationMirror annotation : mixin.getAnnotationMirrors()) {
                 if (Mixin.class.getTypeName().equals(annotation.getAnnotationType().toString())) {
                     for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotation.getElementValues().entrySet()) {
-                        if (entry.getKey().getSimpleName().equals("value")) {
-                            for (TypeMirror type : entry.getValue().accept(new ClassNameExtractor(), processingEnv)) {
-                                targets.add(getBinaryName(type));
+                        if (entry.getKey().getSimpleName().toString().equals("value")) {
+                            for (DeclaredType type : entry.getValue().accept(new ClassNameExtractor(), processingEnv)) {
+                                targets.add(ElementUtils.getBinaryName(type.asElement()));
                             }
                         }
                     }
@@ -93,36 +94,19 @@ public class MixinProcessor extends AbstractProcessor {
         }
     }
 
-    private String getBinaryName(TypeMirror type) {
-        return type.accept(new CanonicalNameVisitor(), processingEnv);
-    }
-
-    private String getBinaryName(Element element) {
-        switch (element.getKind()) {
-        case METHOD:
-            return element.getSimpleName() + getBinaryName(element.asType());
-        case INTERFACE:
-        case CLASS:
-            return processingEnv.getElementUtils().getBinaryName((TypeElement) element).toString().replace('.', '/');
-        default:
-            throw new IllegalArgumentException("Unknown ElementKind");
-        }
-
-    }
-
     private List<String> generateTransformations(TypeElement mixin, String target) {
         List<String> lines = new ArrayList<>();
 
         for (TypeMirror type : mixin.getInterfaces()) {
             lines.add("implementInterface(processor, \"" + target + "\", \""
-                    + getBinaryName(((DeclaredType) type).asElement()) + "\");");
+                    + ElementUtils.getBinaryName(((DeclaredType) type).asElement()) + "\");");
         }
 
         for (Element child : mixin.getEnclosedElements()) {
 
             if (child.getKind() == ElementKind.METHOD) {
-                lines.add("copyMethod(processor, \"" + target + "\", \"" + getBinaryName(mixin) + "\", \""
-                        + getBinaryName(child) + "\");");
+                lines.add("copyMethod(processor, \"" + target + "\", \"" + ElementUtils.getBinaryName(mixin) + "\", \""
+                        + ElementUtils.getBinaryName(child) + TypeUtils.getDescriptor(child.asType()) + "\");");
             }
         }
 

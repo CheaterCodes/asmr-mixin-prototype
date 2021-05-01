@@ -24,17 +24,19 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.QuiltMC:asmr-processor-prototype:fbaea89'
+    implementation "com.github.QuiltMC:asmr-processor-prototype:${project.asmr_version}"
 
     compileOnly project(':annotation')
     annotationProcessor project(':annotation')
 
     testImplementation project(':example')
-    testImplementation 'org.ow2.asm:asm:9.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
 test {
+    testLogging {
+        events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT"
+    }
     useJUnitPlatform()
 }

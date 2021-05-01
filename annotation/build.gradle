@@ -22,6 +22,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.QuiltMC:asmr-processor-prototype:fbaea89'
+    implementation "com.github.QuiltMC:asmr-processor-prototype:${project.asmr_version}"
     implementation project(':compiler-lib')
 }

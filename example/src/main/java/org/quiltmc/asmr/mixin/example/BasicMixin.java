@@ -11,6 +11,8 @@ public abstract class BasicMixin implements Runnable {
     }
 
     private Runnable complexMethod(int len, boolean really, BasicClass.Inner self) {
+        this.field = 0;
+        this.run();
         return this;
     }
 }

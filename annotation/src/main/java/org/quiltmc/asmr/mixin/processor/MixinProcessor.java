@@ -103,7 +103,6 @@ public class MixinProcessor extends AbstractProcessor {
         }
 
         for (Element child : mixin.getEnclosedElements()) {
-
             if (child.getKind() == ElementKind.METHOD) {
                 lines.add("copyMethod(processor, \"" + target + "\", \"" + ElementUtils.getBinaryName(mixin) + "\", \""
                         + ElementUtils.getBinaryName(child) + TypeUtils.getDescriptor(child.asType()) + "\");");
@@ -113,3 +112,4 @@ public class MixinProcessor extends AbstractProcessor {
         return lines;
     }
 }
+

@@ -2,8 +2,10 @@ package __packageName__;
 
 import org.quiltmc.asmr.processor.AsmrProcessor;
 import org.quiltmc.asmr.processor.AsmrTransformer;
+import org.quiltmc.asmr.processor.capture.AsmrCopyNodeCaputre;
 import org.quiltmc.asmr.processor.capture.AsmrNodeCapture;
 import org.quiltmc.asmr.processor.capture.AsmrSliceCapture;
+import org.quiltmc.asmr.processor.tree.AsmrNode;
 import org.quiltmc.asmr.processor.tree.AsmrValueListNode;
 import org.quiltmc.asmr.processor.tree.AsmrValueNode;
 import org.quiltmc.asmr.processor.tree.member.AsmrMethodListNode;
@@ -32,19 +34,34 @@ public class __transformerName__ implements AsmrTransformer {
 
     private void copyMethod(AsmrProcessor processor, String target, String source, String method) {
         processor.withClass(target, targetClass -> {
-            AsmrSliceCapture<AsmrMethodNode> targeCapture = processor.refCapture(targetClass.methods(), 0, 0, true, false);
+            AsmrSliceCapture<AsmrMethodNode> targetCapture = processor.refCapture(targetClass.methods(), 0, 0, true, false);
             processor.withClass(source, sourceClass -> {
                 sourceClass.methods().forEach(sourceMethod -> {
                     if ((sourceMethod.name().value() + sourceMethod.desc().value()).equals(method)) {
                         AsmrNodeCapture<AsmrMethodNode> sourceCapture = processor.copyCapture(sourceMethod);
-                        processor.addWrite(this, targeCapture, () -> {
+                        processor.addWrite(this, targetCapture, () -> {
                             AsmrMethodListNode methods = new AsmrMethodListNode();
-                            processor.substitute(methods.add(), sourceCapture);
+                            AsmrMethodNode m = methods.add();
+                            processor.substitute(m, sourceCapture);
+                            replaceRecursive(processor, m, source, target);
                             return methods;
                         });
                     }
                 });
             });
         });
+    }
+
+    private void replaceRecursive(AsmrProcessor processor, AsmrNode<?> node, String replace, String with) {
+        if (node instanceof AsmrValueNode) {
+            Object value = ((AsmrValueNode<?>)node).value();
+            if (value instanceof String && ((String)value).contains(replace)) {
+                String newValue = ((AsmrValueNode<String>)node).value().replace(replace, with);
+                AsmrValueNode<String> sourceNode = new AsmrValueNode<String>().init(newValue);
+                ((AsmrValueNode<String>)node).copyFrom(sourceNode);
+            }
+        }
+
+        node.children().forEach(c -> replaceRecursive(processor, c, replace, with));
     }
 }

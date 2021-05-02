@@ -11,8 +11,22 @@ import org.quiltmc.asmr.processor.tree.AsmrValueNode;
 import org.quiltmc.asmr.processor.tree.member.AsmrMethodListNode;
 import org.quiltmc.asmr.processor.tree.member.AsmrMethodNode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("unused")
 public class __transformerName__ implements AsmrTransformer {
+    public List<String> getPhases() {
+        List<String> l = new ArrayList<>();
+        l.add("READ_INITIAL");
+        l.add("READ_INITIAL");
+        l.add("READ_INITIAL");
+        l.add("READ_INITIAL");
+        l.add("READ_INITIAL");
+        l.add(null);
+        return l;
+    }
+
     public void apply(AsmrProcessor processor) {
     }
 
